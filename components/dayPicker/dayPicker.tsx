@@ -65,7 +65,7 @@ export const DayPicker = ({ onSetSelectedDate, selectedDate }: IProps) => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginTop: 20,
+    // marginTop: 20,
     flex: 1,
   },
   button: {

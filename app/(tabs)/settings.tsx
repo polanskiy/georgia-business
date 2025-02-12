@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,19 +9,27 @@ import {
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TOTAL } from '@/constants/storage';
+import { HISTORY, TOTAL } from '@/constants/storage';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useFocusEffect } from 'expo-router';
 
+type TModalType = 'history' | 'total' | '';
+
 export default function Settings() {
   const [total, setTotal] = useState(0);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modal, setModal] = useState<TModalType>('');
+  const [history, setHistory] = useState<
+    { date: string; amount: string; code: string; converted: string }[]
+  >([]);
 
   useFocusEffect(
     useCallback(() => {
       const loadData = async () => {
         const savedTotal = await AsyncStorage.getItem(TOTAL);
         if (savedTotal) setTotal(parseFloat(savedTotal));
+
+        const savedHistory = await AsyncStorage.getItem(HISTORY);
+        if (savedHistory) setHistory(JSON.parse(savedHistory));
       };
 
       loadData();
@@ -29,15 +37,18 @@ export default function Settings() {
   );
 
   const handleRemoveClearTotal = async () => {
-    setModalVisible(false);
-
-    await AsyncStorage.setItem(TOTAL, '0');
-    setTotal(0);
+    if (modal === 'history') {
+      await AsyncStorage.setItem(HISTORY, '[]');
+      setHistory([]);
+    } else if (modal === 'total') {
+      await AsyncStorage.setItem(TOTAL, '0');
+      setTotal(0);
+    }
+    setModal('');
   };
 
-  const handleModal = () => {
-    if (total === 0) return;
-    setModalVisible(true);
+  const handleModal = (value: TModalType) => {
+    setModal(value);
   };
 
   return (
@@ -52,7 +63,10 @@ export default function Settings() {
           </View>
 
           <View style={styles.item}>
-            <TouchableOpacity onPress={handleModal}>
+            <TouchableOpacity
+              onPress={() => handleModal('total')}
+              disabled={total === 0}
+            >
               <IconSymbol
                 size={48}
                 name="trash.square.fill"
@@ -61,11 +75,31 @@ export default function Settings() {
             </TouchableOpacity>
           </View>
         </View>
+
+        <View style={styles.row}>
+          <View style={styles.item}>
+            <Text style={styles.label}>История</Text>
+          </View>
+
+          <View style={styles.item}>
+            <TouchableOpacity
+              onPress={() => handleModal('history')}
+              disabled={!history?.length}
+            >
+              <IconSymbol
+                size={48}
+                name="trash.square.fill"
+                color={!history?.length ? '#aaa' : '#007AFF'}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
         <Modal
           animationType="fade"
           transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
+          visible={Boolean(modal)}
+          onRequestClose={() => setModal('')}
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
@@ -74,7 +108,7 @@ export default function Settings() {
               <View style={styles.buttonContainer}>
                 <TouchableOpacity
                   style={styles.cancelButton}
-                  onPress={() => setModalVisible(false)}
+                  onPress={() => setModal('')}
                 >
                   <Text style={styles.buttonText}>Отмена</Text>
                 </TouchableOpacity>
@@ -96,13 +130,13 @@ export default function Settings() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#222',
     flexDirection: 'column',
     paddingHorizontal: 16,
     paddingTop: 36,
   },
   safeArea: {
     flex: 1,
+    backgroundColor: '#222',
   },
   label: {
     fontSize: 18,
@@ -125,6 +159,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 50,
   },
 
   modalOverlay: {

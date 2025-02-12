@@ -10,7 +10,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  FlatList,
   Keyboard,
 } from 'react-native';
 
@@ -143,20 +142,6 @@ export default function HomeScreen() {
           >
             <Text style={styles.buttonText}>Применить</Text>
           </TouchableOpacity>
-
-          <Text style={styles.label}>История:</Text>
-          <FlatList
-            data={history}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.historyItem}>
-                <Text style={styles.historyItemText}>
-                  {item.date} - {item.amount} {item.code} → {item.converted}{' '}
-                  Лари
-                </Text>
-              </View>
-            )}
-          />
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -165,16 +150,16 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#222', // Фон для безопасной зоны
     justifyContent: 'space-between',
     gap: 16,
     width: '100%',
     paddingHorizontal: 16,
+    marginTop: 60,
   },
   safeArea: {
     flex: 1,
+    backgroundColor: '#222',
   },
   inputs: {
     flex: 1,
@@ -221,14 +206,5 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 18,
-  },
-  historyItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  historyItemText: {
-    fontSize: 16,
-    color: '#fff',
   },
 });

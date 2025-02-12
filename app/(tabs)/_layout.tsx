@@ -30,7 +30,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'Главная',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="house.fill" color={color} />
           ),
@@ -39,9 +39,22 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: 'Настройки',
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="gearshape.2.fill" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="history"
+        options={{
+          title: 'История',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol
+              size={28}
+              name="list.bullet.circle.fill"
+              color={color}
+            />
           ),
         }}
       />

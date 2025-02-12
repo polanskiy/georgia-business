@@ -138,7 +138,7 @@ export const CurrencyPicker = ({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginTop: 20,
+    // marginTop: 20,
     flex: 1,
   },
   button: {
