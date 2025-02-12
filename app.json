@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "georgia-ip",
-    "slug": "georgia-ip",
+    "name": "Georgia Tax Counter",
+    "slug": "georgia-business",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
